@@ -27,4 +27,10 @@ torchaudio>=0.9.0
 
 # Development and testing
 jupyter>=1.0.0
-ipykernel>=6.0.0 
+ipykernel>=6.0.0
+
+# API dependencies
+fastapi>=0.68.0
+uvicorn>=0.15.0
+python-multipart>=0.0.5
+requests>=2.25.0 
