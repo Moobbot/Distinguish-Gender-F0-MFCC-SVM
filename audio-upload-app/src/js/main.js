@@ -2,11 +2,25 @@ document.addEventListener('DOMContentLoaded', function() {
     const uploadForm = document.getElementById('uploadForm');
     const resultDiv = document.getElementById('result');
     const loadingDiv = document.getElementById('loading');
+    const audioPlayer = document.getElementById('audioPlayer');
+    const fileInput = document.getElementById('audioFile');
+
+    // Handle file selection for audio preview
+    fileInput.addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const url = URL.createObjectURL(file);
+            audioPlayer.src = url;
+            audioPlayer.classList.remove('d-none');
+        } else {
+            audioPlayer.src = '';
+            audioPlayer.classList.add('d-none');
+        }
+    });
 
     uploadForm.addEventListener('submit', function(event) {
         event.preventDefault();
         
-        const fileInput = document.getElementById('audioFile');
         const file = fileInput.files[0];
         
         if (!file) {
@@ -15,46 +29,48 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Show loading
-        loadingDiv.style.display = 'block';
-        resultDiv.style.display = 'none';
+        loadingDiv.classList.remove('d-none');
+        resultDiv.classList.add('d-none');
 
         // Simulate processing (replace this with actual API call)
-        setTimeout(() => {
-            loadingDiv.style.display = 'none';
-            
-            // Demo result (replace this with actual API response)
-            const demoResult = {
-                success: true,
-                prediction: {
-                    gender: 'Male',
-                    confidence: 95.5
-                }
-            };
-            
-            displayResult(demoResult);
-        }, 2000);
+        // Create FormData to send the file
+        const formData = new FormData();
+        formData.append('audio', file);
+
+        // Make API call to your backend
+        fetch('http://localhost:5000/predict', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            loadingDiv.classList.add('d-none');
+            displayResult(data);
+        })
+        .catch(error => {
+            loadingDiv.classList.add('d-none');
+            showMessage('Error processing the audio file: ' + error.message, 'error');
+        });
     });
 
     function displayResult(data) {
-        resultDiv.style.display = 'block';
+        resultDiv.classList.remove('d-none');
         if (data.success) {
-            resultDiv.innerHTML = `
-                <h2>Prediction Result</h2>
-                <div class="prediction-details">
-                    <p>Predicted Gender: ${data.prediction.gender}</p>
-                    <p>Confidence: ${data.prediction.confidence}%</p>
-                </div>
-            `;
+            document.getElementById('svm-prediction').textContent = `SVM Prediction: ${data.svm_prediction}`;
+            document.getElementById('rf-prediction').textContent = `Random Forest Prediction: ${data.rf_prediction}`;
+            document.getElementById('final-prediction').textContent = `Final Prediction: ${data.final_prediction}`;
+            document.getElementById('confidence').textContent = `Confidence: ${data.confidence}%`;
         } else {
             showMessage(data.error || 'Unknown error occurred', 'error');
         }
     }
 
     function showMessage(message, type = 'info') {
-        resultDiv.style.display = 'block';
+        resultDiv.classList.remove('d-none');
+        const alertClass = type === 'error' ? 'alert-danger' : 'alert-info';
         resultDiv.innerHTML = `
-            <div class="message ${type}">
-                <p>${message}</p>
+            <div class="alert ${alertClass}" role="alert">
+                ${message}
             </div>
         `;
     }
