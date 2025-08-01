@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gender Classification from Audio</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Gender Classification from Audio</h1>
+
+        <div class="upload-section">
+            <form id="uploadForm">
+                <div class="file-input">
+                    <input type="file" id="audioFile" accept=".wav,.mp3,.flac,.m4a,.ogg" required>
+                </div>
+                <button type="submit">Upload and Classify</button>
+            </form>
+        </div>
+
+        <div id="result" class="result-section">
+            <h2>Prediction Result</h2>
+            <div class="prediction-details">
+                <p id="svm-prediction"></p>
+                <p id="rf-prediction"></p>
+                <p id="final-prediction"></p>
+                <p id="confidence"></p>
+            </div>
+        </div>
+
+        <div id="loading" class="loading-section">
+            Processing...
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+
+</html>

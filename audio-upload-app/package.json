@@ -1,0 +1,14 @@
+{
+    "name": "audio-gender-classification",
+    "version": "1.0.0",
+    "description": "Web interface for Vietnamese speech gender classification",
+    "main": "src/index.html",
+    "scripts": {
+        "start": "serve src"
+    },
+    "dependencies": {
+        "serve": "^10.0.2"
+    },
+    "author": "",
+    "license": "MIT"
+}

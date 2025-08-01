@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gender Classification from Audio</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        input[type="file"] {
+            margin-bottom: 10px;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Gender Classification from Audio</h1>
+<form id="uploadForm">
+    <input type="file" id="audioFile" accept=".wav,.mp3,.flac,.m4a,.ogg" required>
+    <button type="submit">Upload and Classify</button>
+</form>
+
+<div id="result"></div>
+
+<script>
+    document.getElementById('uploadForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent the form from submitting the default way
+
+        const fileInput = document.getElementById('audioFile');
+        const formData = new FormData();
+        formData.append('file', fileInput.files[0]);
+
+        fetch('http://localhost:8000/predict', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            const resultDiv = document.getElementById('result');
+            if (data.success) {
+                resultDiv.innerHTML = `
+                    <h2>Prediction Result:</h2>
+                    <p><strong>SVM Prediction:</strong> ${data.predictions.SVM}</p>
+                    <p><strong>Random Forest Prediction:</strong> ${data.predictions.RandomForest}</p>
+                    <p><strong>Final Prediction:</strong> ${data.final_prediction}</p>
+                    <p><strong>Confidence:</strong> ${data.final_confidence}</p>
+                `;
+            } else {
+                resultDiv.innerHTML = `<p>Error: ${data.error}</p>`;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('result').innerHTML = `<p>Error: ${error.message}</p>`;
+        });
+    });
+</script>
+
+</body>
+</html>
