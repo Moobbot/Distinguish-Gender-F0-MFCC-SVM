@@ -104,30 +104,44 @@ def predict_gender_from_audio(audio_path: str) -> Dict[str, Any]:
         results = {}
         
         # SVM prediction
-        svm_pred = models['svm'].predict(features_scaled)[0]
-        svm_confidence = abs(models['svm'].decision_function(features_scaled)[0])
-        svm_confidence = min(svm_confidence / 2.0, 1.0)
+        svm_decision = models['svm'].decision_function(features_scaled)[0]
+        # Chuyển đổi decision score thành xác suất
+        svm_male_prob = 1 / (1 + np.exp(svm_decision))  # Sigmoid function
+        svm_female_prob = 1 - svm_male_prob
+        svm_pred = 1 if svm_female_prob > svm_male_prob else 0
         
         results['SVM'] = {
             'prediction': 'Nữ' if svm_pred == 1 else 'Nam',
-            'confidence': float(svm_confidence),
+            'confidence': float(max(svm_male_prob, svm_female_prob)),
+            'probabilities': {
+                'Nam': float(svm_male_prob),
+                'Nữ': float(svm_female_prob)
+            },
             'gender_code': int(svm_pred)
         }
         
         # Random Forest prediction
         rf_pred = models['rf'].predict(features_scaled)[0]
         rf_prob = models['rf'].predict_proba(features_scaled)[0]
-        rf_confidence = max(rf_prob)
+        rf_male_prob = rf_prob[0]
+        rf_female_prob = rf_prob[1]
         
         results['RandomForest'] = {
             'prediction': 'Nữ' if rf_pred == 1 else 'Nam',
-            'confidence': float(rf_confidence),
+            'confidence': float(max(rf_male_prob, rf_female_prob)),
+            'probabilities': {
+                'Nam': float(rf_male_prob),
+                'Nữ': float(rf_female_prob)
+            },
             'gender_code': int(rf_pred)
         }
         
-        # Kết quả tổng hợp
-        final_prediction = 'Nữ' if svm_pred == 1 else 'Nam'
-        final_confidence = max(svm_confidence, rf_confidence)
+        # Kết quả tổng hợp - tính trung bình xác suất của cả hai mô hình
+        avg_male_prob = (results['SVM']['probabilities']['Nam'] + results['RandomForest']['probabilities']['Nam']) / 2
+        avg_female_prob = (results['SVM']['probabilities']['Nữ'] + results['RandomForest']['probabilities']['Nữ']) / 2
+        
+        final_prediction = 'Nữ' if avg_female_prob > avg_male_prob else 'Nam'
+        final_confidence = float(max(avg_male_prob, avg_female_prob))
         
         return {
             "success": True,
