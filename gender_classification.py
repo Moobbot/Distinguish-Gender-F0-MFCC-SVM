@@ -386,10 +386,13 @@ class VietnameseGenderClassifier:
         
         if self.svm_model:
             svm_pred = self.svm_model.predict(features_scaled)[0]
-            svm_prob = self.svm_model.predict_proba(features_scaled)[0]
+            # SVM không có predict_proba mặc định, sử dụng decision_function
+            svm_confidence = abs(self.svm_model.decision_function(features_scaled)[0])
+            # Chuẩn hóa confidence về khoảng [0, 1]
+            svm_confidence = min(svm_confidence / 2.0, 1.0)
             results['SVM'] = {
                 'prediction': 'Nữ' if svm_pred == 1 else 'Nam',
-                'confidence': max(svm_prob)
+                'confidence': svm_confidence
             }
         
         if self.rf_model:
