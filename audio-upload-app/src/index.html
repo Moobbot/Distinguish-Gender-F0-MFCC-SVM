@@ -15,31 +15,46 @@
         <h1 class="text-center mb-4">Gender Classification from Audio</h1>
 
         <div class="row justify-content-center">
-            <div class="col-md-8">
+            <div class="col-md-10">
                 <div class="card">
                     <div class="card-body">
                         <div class="upload-section mb-4">
                             <form id="uploadForm">
                                 <div class="mb-3">
-                                    <label for="audioFile" class="form-label">Choose an audio file</label>
-                                    <input type="file" class="form-control" id="audioFile" accept=".wav,.mp3,.flac,.m4a,.ogg" required>
+                                    <label class="form-label">Choose an option</label>
+                                    <div class="d-flex gap-2 mb-3">
+                                        <button type="button" id="recordButton" class="btn btn-danger flex-grow-1">
+                                            <span id="recordIcon">⏺</span> Record
+                                        </button>
+                                        <button type="button" id="stopButton" class="btn btn-secondary flex-grow-1" disabled>
+                                            ⏹ Stop
+                                        </button>
+                                    </div>
+                                    <div class="text-center mb-3" id="recordingTimer" style="display: none;">
+                                        Recording: <span id="timer">00:00</span>
+                                    </div>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="audioFile" class="form-label">Or upload an audio file</label>
+                                    <input type="file" class="form-control" id="audioFile" accept=".wav,.mp3,.flac,.m4a,.ogg">
                                 </div>
                                 <div class="mb-3">
                                     <audio id="audioPlayer" controls class="w-100 d-none">
                                         Your browser does not support the audio element.
                                     </audio>
                                 </div>
-                                <button type="submit" class="btn btn-primary w-100">Upload and Classify</button>
+                                <button type="submit" class="btn btn-primary w-100" disabled id="submitButton">Upload and Classify</button>
                             </form>
                         </div>
 
                         <div id="result" class="result-section d-none">
                             <h2 class="h4 mb-3">Prediction Result</h2>
-                            <div class="prediction-details">
+                            <div class="prediction-details card p-3">
                                 <p id="svm-prediction" class="mb-2"></p>
                                 <p id="rf-prediction" class="mb-2"></p>
-                                <p id="final-prediction" class="mb-2 fw-bold"></p>
-                                <p id="confidence" class="mb-0"></p>
+                                <hr class="my-2">
+                                <p id="final-prediction" class="mb-2"></p>
+                                <p id="confidence" class="mb-0 text-muted"></p>
                             </div>
                         </div>
 
@@ -57,6 +72,7 @@
 
     <!-- Bootstrap Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.rawgit.com/mattdiamond/Recorderjs/08e7abd9/dist/recorder.js"></script>
     <script src="js/main.js"></script>
 </body>
 

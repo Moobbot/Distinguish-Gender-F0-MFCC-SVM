@@ -22,6 +22,17 @@ app = FastAPI(
     version="1.0.0"
 )
 
+# Thêm CORS middleware
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://127.0.0.1:5500", "http://localhost:5500", "*"],  # Thêm origins của frontend
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 # Biến global để lưu mô hình
 models = {}
 classifier = None
