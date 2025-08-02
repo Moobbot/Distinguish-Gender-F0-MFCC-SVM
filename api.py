@@ -55,19 +55,19 @@ def load_models():
             raise FileNotFoundError("Thư mục models không tồn tại. Vui lòng chạy save_model.py trước.")
         
         # Tải SVM model
-        with open(os.path.join(models_dir, "svm_model.pkl"), 'rb') as f:
+        with open(os.path.join(models_dir, "/ver1/svm_model.pkl"), 'rb') as f:
             models['svm'] = pickle.load(f)
         
         # Tải Random Forest model
-        with open(os.path.join(models_dir, "random_forest_model.pkl"), 'rb') as f:
+        with open(os.path.join(models_dir, "/ver1/random_forest_model.pkl"), 'rb') as f:
             models['rf'] = pickle.load(f)
         
         # Tải scaler
-        with open(os.path.join(models_dir, "scaler.pkl"), 'rb') as f:
+        with open(os.path.join(models_dir, "/ver1/scaler.pkl"), 'rb') as f:
             models['scaler'] = pickle.load(f)
         
         # Tải thông tin mô hình
-        with open(os.path.join(models_dir, "model_info.pkl"), 'rb') as f:
+        with open(os.path.join(models_dir, "/ver1/model_info.pkl"), 'rb') as f:
             models['info'] = pickle.load(f)
         
         # Khởi tạo classifier để trích xuất đặc trưng
